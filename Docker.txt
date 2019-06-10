@@ -1,0 +1,131 @@
+Docker Installation
+
+Install Docker on Linux
+
+
+curl -sSL https://get.docker.com/ | sh
+Start Docker
+
+
+systemctl start docker
+Stop Docker
+
+
+systemctl stop docker
+Docker Lifecycle
+
+Pull (Download) Docker Image fedora
+
+
+
+docker run ubuntu /bin/echo 'Hello world'
+docker run -t -i ubuntu /bin/bash
+
+ docker run -d ubuntu /bin/sh -c "while true; do echo hello world; sleep 1; done"
+ 
+ docker logs
+
+
+
+docker pull fedora
+Search image fedora
+
+
+docker search fedora
+ Run Image
+
+
+docker run fedora
+Run image and removes container when stopped
+
+
+docker run --rm fedora
+Run an image fedora and start a tty
+
+
+docker run -t -i fedora /bin/bash
+Run a shell on a running container
+
+
+docker exec -t -i <mycontainer> /bin/bash
+Build an image on the current directory from a Dockerfile
+
+
+docker build .
+Delete an image
+
+
+docker rmi <myimage>
+Attach to a running Container
+
+
+docker attach <container>
+ See the logs of a Container
+
+
+docker logs <container>
+List active containers
+
+
+docker ps -l
+List available images
+
+
+docker images
+Stop all containers
+
+
+docker stop $(docker ps -a -q)
+Volumes
+
+Map a directory on the host to a docker container
+
+
+docker run -v $HOSTDIR:$DOCKERDIR
+Ports and IPs
+
+Expose Container Ports to Host
+
+
+docker run -p 27.0.0.:$HOSTPORT:$CONTAINERPORT --name CONTAINER -t someimage
+Check Mapped port
+
+
+docker port CONTAINER $CONTAINERPORT
+Check container's IP Address:
+
+
+docker inspect -f '{{ .NetworkSettings.IPAddress }}' <container_name>
+ Link Containers
+
+Step : Start first CONTAINER
+
+
+docker run --name CONTAINER
+Step 2: Start LINKED container
+
+
+docker run -d --link CONTAINER:ALIAS --name LINKED <myimage>
+ Cleanup
+
+Kill running containers
+
+
+docker kill $(docker ps -q)
+Delete old containers
+
+
+docker ps -a | grep 'weeks ago' | awk '{print $}' | xargs docker rm
+Delete stopped containers
+
+
+docker rm -v `docker ps -a -q -f status=exited`
+Delete dangling images
+
+
+docker rmi $(docker images -q -f dangling=true)
+Delete all images
+
+
+docker rmi $(docker images -q)
+ 
