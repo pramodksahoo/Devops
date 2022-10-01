@@ -1,0 +1,25 @@
+kubectl apply -f comm-hub-invoice-api.yaml -n devops-comm-hub
+
+aws eks --region us-east-1 update-kubeconfig --name eks_commhub_cert_east_1
+
+kubectl create configmap commhub-cassandra-keystore --from-file=commhub.cassandra.truststore.jks -n devops-comm-hub
+
+kubectl get ns
+kubectl apply -f dashboard-fix.yaml -n kubernetes-dashboard
+kubectl get all -n kubernetes-dashboard
+kubectl delete pod/kubernetes-dashboard-576cb95f94-5gr6l -n kubernetes-dashboard
+kubectl delete pod/dashboard-metrics-scraper-c45b7869d-bgrn8 -n kubernetes-dashboard
+
+kubectl get endpoints kubernetes-dashboard -n kubernetes-dashboard
+
+kubectl get ingress -n kubernetes-dashboard
+
+kubectl get deployment.apps/kubernetes-dashboard -n devops-comm-hub -o yaml
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep eks-admin | awk '{print $1}')
+
+kubectl -n devops-comm-hub describe secret $(kubectl -n devops-comm-hub get secret | grep commhubdeveloper | awk '{print $1}')
+
+kubectl get services -n devops-comm-hub -o yaml >>com-services.yaml
+sed -i '/resourceVersion/d' com-ingress.yaml
+sed -i '/uid/d' com-ingress.yaml
+sed -i '/creationTimestamp/d' com-ingress.yaml
